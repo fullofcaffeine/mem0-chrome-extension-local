@@ -1,0 +1,109 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mem0-chrome-extension-local"
+version = "1.0.0"
+description = "Local Mem0 Chrome Extension with RAG capabilities - experimental self-contained server"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Deshraj Yadav", email = "support@mem0.ai"},
+    {name = "Marcelo Serpa"}
+]
+keywords = ["chrome-extension", "memory", "ai", "rag", "local", "privacy", "experimental", "mcp-alternative"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.0.0",
+    "rich>=12.0.0",
+    "requests>=2.28.0",
+    "ollama>=0.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+"Original Project" = "https://github.com/mem0ai/mem0-chrome-extension"
+"Mem0 AI" = "https://mem0.ai/"
+"OpenMemory MCP" = "https://github.com/modelcontextprotocol/servers/tree/main/src/memory"
+
+[project.scripts]
+# CLI commands that can be run from anywhere in the project
+mem0-setup = "server.scripts.setup_env:main"
+mem0-start = "server.scripts.start_mem0:main"
+mem0-test = "server.scripts.run_tests:main"
+mem0-test-reasoning = "tests.test_llm_deletion_reasoning:test_llm_deletion_reasoning"
+mem0-test-purging = "tests.test_semantic_purging:test_semantic_purging"
+mem0-demo-purging = "tests.test_semantic_purging_summary:test_semantic_purging_demo"
+mem0-list = "server.scripts.list_memories:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["server*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["server"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+] 
